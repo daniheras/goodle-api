@@ -1,0 +1,53 @@
+<?php
+
+/*
+|--------------------------------------------------------------------------
+| Application Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register all of the routes for an application.
+| It is a breeze. Simply tell Lumen the URIs it should respond to
+| and give it the Closure to call when that URI is requested.
+|
+*/
+
+$router->get('/', function () use ($router) {
+    return str_random(60);
+});
+
+
+//Ruta para loguearse con un usuario ya creado y recibir un token para poder usar el resto de endpoints
+
+$router->post('/auth/login', 'AuthController@postLogin');
+
+//Ruta para registrarse, crear un nuevo usuario.
+
+$router->post('/register', 'UserController@register');
+
+// Middleware que protege todos los endpoints de peticiones no autorizadas
+
+$router->group(['middleware' => 'auth:api'], function($router)
+{
+
+    // ## Rutas de cursos ##
+    
+    $router->get('/courses', 'CourseController@index');
+
+    $router->post('/courses', 'CourseController@createCourse');
+    
+    $router->put('/courses', 'CourseController@updateCourse');
+
+    $router->delete('/courses', 'CourseController@deleteCourse');
+
+    $router->get('/courses/{id}/users', 'CourseController@getMembers');
+
+    //Ruta para comprobar el estado de la api y si estas autenticado
+
+    $router->get('/test', function() {
+        return response()->json([
+            'message' => 'Ok!',
+        ]);
+    });
+    
+    
+});

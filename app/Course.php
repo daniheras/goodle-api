@@ -1,0 +1,20 @@
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Course extends Model
+{
+    protected $fillable = [
+        'name',
+    ];
+
+    protected $hidden = [];
+
+    // Definimos la relacion NM entre cursos / usuarios.
+    public function users()
+    {
+        return $this->belongsToMany('App\User');
+    }
+}
