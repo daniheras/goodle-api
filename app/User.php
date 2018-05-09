@@ -35,4 +35,6 @@ class User extends Model implements JWTSubject, AuthenticatableContract, Authori
     {
         return $this->belongsToMany('App\Course')->withPivot(['confirmed', 'member_since']);
     }
+
+
 }
