@@ -11,16 +11,27 @@ use Illuminate\Support\Facades\Hash;
 
 class CourseController extends Controller{
 
-    function index(Request $request){
+    function index(Request $request, $list = 'all'){
         $courses = [];
 
-        $user = User::find($request['current_user']);
+        // Si el parametro opcional es 'all', devuelve los cursos publicos y los del usuario
 
-        $courses['user_courses'] = $user->courses;
 
-        $publicCourses = Course::where('public', 1)->get();
+        // Si el parametro opcional es 'user', devuelve solo los cursos del usuario
+        if( $list == 'user' || $list == 'all' ){
 
-        $courses['public_courses'] = $publicCourses;
+          $user = User::find($request['current_user']);
+          $courses['user_courses'] = $user->courses;
+
+        }
+
+        // Si el parametro opcional es 'public', devuelve solo los cursos publicos
+        if ( $list == 'public' || $list == 'all' ){
+
+          $publicCourses = Course::where('public', 1)->get();
+          $courses['public_courses'] = $publicCourses;
+
+        }
 
         return $courses;
     }
