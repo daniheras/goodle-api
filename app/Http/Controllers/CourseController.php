@@ -63,6 +63,27 @@ class CourseController extends Controller{
     return response()->json($course, 201);
 
     }
+    
+    function updateCourse(Request $request){
+      $this->validate($request, [
+        'id' => 'required'
+      ]);
+
+
+      $course = Course::find($request['id']); 
+
+      // Si el usuario no es el admin del curso le devuelve unauthorized.
+      if ( $course['admin_id'] != $request['current_user'] ) {
+          return response()->json(["Message" => 'You need to be the admin of this course to modify it'], 401);
+      }
+
+      $course['update'] = ["updated_at" => "2011-01-01 01:01:01"];
+
+      // Actualiza en el curso todos los campos definidos en el JSON de la request
+      $course->update($request['update']);
+
+      return response()->json(["Message" => 'The course has been modified'], 201);
+    }
 
     function coursesId(Request $request, $id){
       $courses = DB::select("select * from courses where id in (select course_id from users_courses where user_id = ". $id .");");
