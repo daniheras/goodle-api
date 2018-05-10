@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Course extends Model
 {
     protected $fillable = [
-        'name',
+        'name', 'category', 'admin_id', 'public', 'description', 'picture'
     ];
 
     protected $hidden = [];

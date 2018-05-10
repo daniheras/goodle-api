@@ -37,8 +37,27 @@ class CourseController extends Controller{
     }
 
     function addCourse(Request $request){
+        $this->validate($request, [
+            'name' => 'required|max:255',
+            'category' => 'required'
+        ]);
+
+        // Sets a default image if no one provided
+        if( !array_key_exists('picture', $request) ){
+          $request['picture'] = 'https://placeholdit.co//i/500x200?&bg=ecf0f1&fc=e74c3c&text=Goodle%20Course';
+        }
+
+        // Sets a default description if no one provided        
+        if( !array_key_exists('description', $request ) ){
+          $request['description'] = 'This course has no description';
+        }
+
         $course = Course::create([
-            'name' => $request->json()->get('name')
+            'name' => $request['name'],
+            'admin_id' => $request['current_user'],
+            'category' => $request['category'],
+            'picture' => $request['picture'],
+            'description' => $request['description']      
         ]);
 
     return response()->json($course, 201);

@@ -33,7 +33,7 @@ $router->group(['middleware' => 'auth:api'], function($router)
     
     $router->get('/courses[/{list}]', 'CourseController@index'); // Listar todos los cursos
 
-    $router->post('/courses', 'CourseController@createCourse'); // Crear un curso
+    $router->post('/courses', 'CourseController@addCourse'); // Crear un curso
     
     $router->put('/courses', 'CourseController@updateCourse'); // Actualizar/Modificar un curso
 
