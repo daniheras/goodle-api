@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Course extends Model
 {
     protected $fillable = [
-        'name',
+        'name', 'category', 'admin_id', 'public', 'description', 'picture'
     ];
 
     protected $hidden = [];
@@ -16,5 +16,12 @@ class Course extends Model
     public function users()
     {
         return $this->belongsToMany('App\User');
+    }
+
+
+
+    public function admins()
+    {
+        return $this->hasMany('App\Course', 'admin_id');
     }
 }

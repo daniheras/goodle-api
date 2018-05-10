@@ -31,15 +31,15 @@ $router->group(['middleware' => 'auth:api'], function($router)
 
     // ## Rutas de cursos ##
     
-    $router->get('/courses', 'CourseController@index');
+    $router->get('/courses[/{list}]', 'CourseController@index'); // Listar todos los cursos
 
-    $router->post('/courses', 'CourseController@createCourse');
+    $router->post('/courses', 'CourseController@addCourse'); // Crear un curso
     
-    $router->put('/courses', 'CourseController@updateCourse');
+    $router->put('/courses', 'CourseController@updateCourse'); // Actualizar/Modificar un curso
 
-    $router->delete('/courses', 'CourseController@deleteCourse');
+    $router->delete('/courses', 'CourseController@deleteCourse'); // Borrar un curso
 
-    $router->get('/courses/{id}/users', 'CourseController@getMembers');
+    $router->get('/courses/{id}/users', 'CourseController@getMembers'); // Listar todos los usuarios de un curso
 
     //Ruta para comprobar el estado de la api y si estas autenticado
 
