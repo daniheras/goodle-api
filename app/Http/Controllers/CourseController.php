@@ -8,6 +8,7 @@ use App\UserCourse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CourseController extends Controller{
 
@@ -83,6 +84,27 @@ class CourseController extends Controller{
       $course->update($request['update']);
 
       return response()->json(["Message" => 'The course has been modified'], 201);
+    }
+
+    function deleteCourse(Request $request, $id) {
+
+      $param = intval($id);
+
+      try {
+        if( $param == 0 ){
+          return response()->json(["Message" => '(id > 0) must be provided'], 401);
+        }
+  
+        $course = Course::findOrFail($param);
+  
+        $course->delete();
+  
+        return response()->json(["Message" => 'The course has been deleted'], 200);
+
+      } catch (ModelNotFoundException $e) {
+
+        return response()->json(["Message" => 'Course not found or does not exist'], 404);
+      }
     }
 
 }
