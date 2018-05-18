@@ -12,7 +12,7 @@
 */
 
 $router->get('/', function () use ($router) {
-    return str_random(60);
+    return 'Goodle API v1';
 });
 
 
