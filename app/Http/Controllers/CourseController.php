@@ -8,6 +8,7 @@ use App\UserCourse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CourseController extends Controller{
 
@@ -85,46 +86,25 @@ class CourseController extends Controller{
       return response()->json(["Message" => 'The course has been modified'], 201);
     }
 
-    function coursesId(Request $request, $id){
-      $courses = DB::select("select * from courses where id in (select course_id from users_courses where user_id = ". $id .");");
-      return response()->json($courses, 200);
-    }
+    function deleteCourse(Request $request, $id) {
 
-    // function course(Request $request, $id){
-    //   $course = DB::select("select * from goodle.courses where id = ". $id .";");
-    //   return response()->json($course, 200);
-    // }
+      $param = intval($id);
 
-    function course(Request $request, $id_course){
-      $id = $request->json()->get('user_id');
-      $user_courses = DB::select("select id from courses where id in (select course_id from users_courses where user_id = ". $id .");");
-      $id_course = intval($id_course);
-      $aray = [];
-      for ($i=0; $i < count($user_courses); $i++) {
-        $array[] = $user_courses[$i]->id;
+      try {
+        if( $param == 0 ){
+          return response()->json(["Message" => '(id > 0) must be provided'], 401);
+        }
+  
+        $course = Course::findOrFail($param);
+  
+        $course->delete();
+  
+        return response()->json(["Message" => 'The course has been deleted'], 200);
+
+      } catch (ModelNotFoundException $e) {
+
+        return response()->json(["Message" => 'Course not found or does not exist'], 404);
       }
-      if (in_array($id_course, $array)) {
-        $course = DB::select("select * from courses where id = ". $id_course .";");
-        return response()->json($course, 200);
-      }else {
-        return response()->json(["error" => "This user is not registered in the required course"], 400);
-      }
-    }
-
-
-    function addUserToCourse(Request $request) {
-      $user_course = UserCourse::create([
-        'user_id' => $request->json()->get('user_id'),
-        'course_id' => $request->json()->get('course_id')
-      ]);
-      return response()->json($user_course, 201);
-    }
-
-    function unsubscribeCourse(Request $request) {
-      $user_id = $request->json()->get('user_id');
-      $course_id = $request->json()->get('course_id');
-      $delete = DB::select('delete from users_courses where user_id = ' . $user_id . ' and course_id = '. $course_id .';');
-      return response()->json($delete, 200);
     }
 
 }

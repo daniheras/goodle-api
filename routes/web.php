@@ -37,7 +37,7 @@ $router->group(['middleware' => 'auth:api'], function($router)
     
     $router->put('/courses', 'CourseController@updateCourse'); // Actualizar/Modificar un curso
 
-    $router->delete('/courses', 'CourseController@deleteCourse'); // Borrar un curso
+    $router->delete('/courses/{id}', 'CourseController@deleteCourse'); // Borrar un curso
 
     $router->get('/courses/{id}/users', 'CourseController@getMembers'); // Listar todos los usuarios de un curso
 
