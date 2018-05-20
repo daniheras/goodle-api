@@ -162,4 +162,31 @@ class CourseController extends Controller{
 
     }
 
+    function acceptInvite( Request $request, $course_id ){
+      try {
+
+        $course_id = intval($course_id);
+        $course = Course::findOrFail($course_id);
+
+        $user = $course->users->find($request["current_user"]);
+
+        // Comprueba que el usuario haya sido invitado al curso
+        if ( !$user ) {
+          return response()->json(["Message" => 'Sorry, you have not been invited to this course'], 404);
+        }
+
+        // Actualizamos el atributo confirmed para que el usuario pase a ser miembro del curso
+        $user->pivot["confirmed"] = 1;
+        $user->pivot->save();
+
+        return response()->json(["Message" => 'Invitation accepted successfully'], 200);
+
+      } catch( ModelNotFoundException $e ) {
+        return response()->json(["Message" => 'Course not found or does not exist'], 404);
+      }
+
+
+
+    }
+
 }
