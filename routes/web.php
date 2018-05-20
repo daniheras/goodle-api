@@ -41,7 +41,9 @@ $router->group(['middleware' => 'auth:api'], function($router)
 
     /* $router->get('/courses/{id}/users', 'CourseController@getMembers'); */ // Listar todos los usuarios de un curso
 
-    $router->post('/courses/{course_id}/invite/{username}', 'CourseController@inviteUsers'); // Listar todos los usuarios de un curso    
+    $router->post('/courses/{course_id}/invite/{username}', 'CourseController@inviteUsers'); // Invitar un unico usuario al curso.
+
+    $router->post('/courses/{course_id}/accept_invite/', 'CourseController@acceptInvite'); // Invitar un unico usuario al curso.
 
     //Ruta para comprobar el estado de la api y si estas autenticado
 
