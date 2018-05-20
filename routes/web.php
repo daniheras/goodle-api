@@ -39,7 +39,9 @@ $router->group(['middleware' => 'auth:api'], function($router)
 
     $router->delete('/courses/{id}', 'CourseController@deleteCourse'); // Borrar un curso
 
-    $router->get('/courses/{id}/users', 'CourseController@getMembers'); // Listar todos los usuarios de un curso
+    /* $router->get('/courses/{id}/users', 'CourseController@getMembers'); */ // Listar todos los usuarios de un curso
+
+    $router->post('/courses/{course_id}/invite/{username}', 'CourseController@inviteUsers'); // Listar todos los usuarios de un curso    
 
     //Ruta para comprobar el estado de la api y si estas autenticado
 

@@ -61,7 +61,7 @@ class CourseController extends Controller{
             'description' => $request['description']      
         ]);
 
-    return response()->json($course, 201);
+      return response()->json($course, 201);
 
     }
     
@@ -87,24 +87,79 @@ class CourseController extends Controller{
     }
 
     function deleteCourse(Request $request, $id) {
+      //TODO: Añadir restriccion: solo el admin del curso puede borrarlo.
 
       $param = intval($id);
 
       try {
         if( $param == 0 ){
-          return response()->json(["Message" => '(id > 0) must be provided'], 401);
+          return response()->json(["Message" => 'A valid course_id must be provided'], 401);
         }
   
         $course = Course::findOrFail($param);
+
+        //Si el usuario no es el admin devuelve unauthorized
+        if ( $course['admin_id'] != $request['current_user'] ) {
+          return response()->json(["Message" => 'You need to be the admin of this course to delete it'], 401);
+        }
   
         $course->delete();
   
         return response()->json(["Message" => 'The course has been deleted'], 200);
 
-      } catch (ModelNotFoundException $e) {
+      } catch (ModelNotFoundException $e) { // Si el curso solicitado no existe devuelve una excepcion
 
         return response()->json(["Message" => 'Course not found or does not exist'], 404);
       }
+
+      return response()->json(["Message" => 'Unexpected error'], 500);
+    }
+
+    function inviteUsers(Request $request, $username, $courseId){
+
+      $courseId = intval($courseId);
+
+      try {
+        if( $courseId == 0 ){
+          return response()->json(["Message" => 'A valid course_id must be provided'], 401);
+        }
+  
+        // Guardamos el curso solicitado en la request
+        $course = Course::findOrFail($courseId);
+
+        //Si el usuario no es el admin devuelve unauthorized
+        if ( $course['admin_id'] != $request['current_user'] ) {
+          return response()->json(["Message" => 'You need to be the admin of this course to invite people'], 401);
+        }
+
+        /* INSERT USERS */
+
+        try {
+
+          // Comprobamos que el usuario no exista ya dentro del curso, bien sea invitado o como miembro.
+          if ( $course->users->where('username', 'like', $username)->toArray() ){
+            return response()->json(["Message" => "The user '".$username."' has been already invited."], 406);
+          }
+
+          $request_user = User::where('username', 'like', $username)->firstOrFail();
+
+          $course->users()->save($request_user);
+
+          return response()->json(["Message" => "User invited successfully"], 200);
+
+        } catch (ModelNotFoundException $e) {
+          return response()->json(["Message" => 'User not found or does not exist'], 404);
+        }
+
+        /* END OF INSERT USERS */
+
+      } catch (ModelNotFoundException $e) { // Si el curso solicitado no existe devuelve una excepcion
+
+        return response()->json(["Message" => 'Course not found or does not exist'], 404);
+      }
+
+      return response()->json(["Message" => 'Unexpected error'], 500);
+
     }
 
 }
