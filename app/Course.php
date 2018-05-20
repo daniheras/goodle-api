@@ -15,7 +15,7 @@ class Course extends Model
     // Definimos la relacion NM entre cursos / usuarios.
     public function users()
     {
-        return $this->belongsToMany('App\User');
+        return $this->belongsToMany('App\User')->withPivot(['confirmed', 'member_since']);;
     }
 
 
