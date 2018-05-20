@@ -22,6 +22,8 @@ class CreateCoursesTable extends Migration
             $table->string('category');
             $table->string('picture');
             $table->boolean('public')->default(0);
+            $table->unsignedInteger('admin_id');
+            $table->foreign('admin_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
