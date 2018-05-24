@@ -30,11 +30,11 @@ $router->group(['middleware' => 'auth:api'], function($router)
 {
 
     // ## Rutas de cursos ##
-    
-    $router->get('/courses[/{list}]', 'CourseController@index'); // Listar todos los cursos
+
+    $router->get('/courses[/{list}[/{id}]]', 'CourseController@index'); // Listar todos los cursos
 
     $router->post('/courses', 'CourseController@addCourse'); // Crear un curso
-    
+
     $router->put('/courses', 'CourseController@updateCourse'); // Actualizar/Modificar un curso
 
     $router->delete('/courses/{id}', 'CourseController@deleteCourse'); // Borrar un curso
@@ -52,6 +52,6 @@ $router->group(['middleware' => 'auth:api'], function($router)
             'message' => 'Ok!',
         ]);
     });
-    
-    
+
+
 });

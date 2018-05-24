@@ -12,18 +12,31 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CourseController extends Controller{
 
-    function index(Request $request, $list = 'all'){
+    function index(Request $request, $list = 'all', $id = 0){
         $courses = [];
 
-        // Si el parametro opcional es 'all', devuelve los cursos publicos y los del usuario
+        if ($list == 'user' && $id != 0) {
+          $course = Course::find($id);
+          $user_courses = User::find($request['current_user'])->courses;
 
+          // Si el usuario que pide este curso es el admin retorna el curso y un flag a true
+          // Si el curso no es publico y el usuario no esta registrado en el curso solicitado retorna un mensaje de error
+          // Si el curso es publico o el usuaio esta registrado en el curso solicitado y no es el admin retorna el curso
+          if ($course->admin_id == $request['current_user']) {
+            $course['admin'] = true;
+            return $course;
+          }else if ($course->public == 0 && !in_array($course, (array) $user_courses)) {
+            return response()->json(["message" => 'This user are not registered in this course'], 400);
+          }
+
+          return $course;
+        }
 
         // Si el parametro opcional es 'user', devuelve solo los cursos del usuario
-        if( $list == 'user' || $list == 'all' ){
+        if( $list == 'user' || $list == 'all') {
 
-          $user = User::find($request['current_user']);
-          $courses['user_courses'] = $user->courses;
-
+          $user_courses = User::find($request['current_user'])->courses;
+          $courses['user_courses'] = $user_courses;
         }
 
         // Si el parametro opcional es 'public', devuelve solo los cursos publicos
@@ -31,7 +44,11 @@ class CourseController extends Controller{
 
           $publicCourses = Course::where('public', 1)->get();
           $courses['public_courses'] = $publicCourses;
+        }
 
+        // Si el parametro opcional es 'all', devuelve los cursos publicos y los del usuario
+        if ($list == 'all') {
+          $courses = array_unique(array_merge((array) $courses['user_courses'], (array) $courses['public_courses']), SORT_REGULAR);
         }
 
         return $courses;
@@ -48,7 +65,7 @@ class CourseController extends Controller{
           $request['picture'] = 'https://placeholdit.co//i/500x200?&bg=ecf0f1&fc=e74c3c&text=Goodle%20Course';
         }
 
-        // Sets a default description if no one provided        
+        // Sets a default description if no one provided
         if( !array_key_exists('description', $request ) ){
           $request['description'] = 'This course has no description';
         }
@@ -58,20 +75,26 @@ class CourseController extends Controller{
             'admin_id' => $request['current_user'],
             'category' => $request['category'],
             'picture' => $request['picture'],
-            'description' => $request['description']      
+            'description' => $request['description']
         ]);
+        DB::select('insert into course_user (user_id, course_id, confirmed) values ('. $request['current_user'] .', ' . $course->id . ', 1);');
+        // UserCourse::create([
+        //   'user_id' => $request['current_user'],
+        //   'course_id' => $course->id,
+        //   'confirmed' => 1
+        // ]);
 
       return response()->json($course, 201);
 
     }
-    
+
     function updateCourse(Request $request){
       $this->validate($request, [
         'id' => 'required'
       ]);
 
 
-      $course = Course::find($request['id']); 
+      $course = Course::find($request['id']);
 
       // Si el usuario no es el admin del curso le devuelve unauthorized.
       if ( $course['admin_id'] != $request['current_user'] ) {
@@ -95,7 +118,7 @@ class CourseController extends Controller{
         if( $param == 0 ){
           return response()->json(["Message" => 'A valid course_id must be provided'], 401);
         }
-  
+
         $course = Course::findOrFail($param);
 
         //Si el usuario no es el admin devuelve unauthorized
@@ -104,7 +127,7 @@ class CourseController extends Controller{
         }
   
         $course->delete();
-  
+
         return response()->json(["Message" => 'The course has been deleted'], 200);
 
       } catch (ModelNotFoundException $e) { // Si el curso solicitado no existe devuelve una excepcion
