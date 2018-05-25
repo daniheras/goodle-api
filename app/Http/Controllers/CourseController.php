@@ -46,11 +46,6 @@ class CourseController extends Controller{
           $courses['public_courses'] = $publicCourses;
         }
 
-        // Si el parametro opcional es 'all', devuelve los cursos publicos y los del usuario
-        if ($list == 'all') {
-          $courses = array_unique(array_merge((array) $courses['user_courses'], (array) $courses['public_courses']), SORT_REGULAR);
-        }
-
         return $courses;
     }
 
@@ -125,7 +120,7 @@ class CourseController extends Controller{
         if ( $course['admin_id'] != $request['current_user'] ) {
           return response()->json(["Message" => 'You need to be the admin of this course to delete it'], 401);
         }
-  
+
         $course->delete();
 
         return response()->json(["Message" => 'The course has been deleted'], 200);
@@ -146,7 +141,7 @@ class CourseController extends Controller{
         if( $courseId == 0 ){
           return response()->json(["Message" => 'A valid course_id must be provided'], 401);
         }
-  
+
         // Guardamos el curso solicitado en la request
         $course = Course::findOrFail($courseId);
 
