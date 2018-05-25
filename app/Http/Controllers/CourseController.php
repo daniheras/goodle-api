@@ -72,6 +72,7 @@ class CourseController extends Controller{
             'picture' => $request['picture'],
             'description' => $request['description']
         ]);
+        //TODO: eloquent
         DB::select('insert into course_user (user_id, course_id, confirmed) values ('. $request['current_user'] .', ' . $course->id . ', 1);');
         // UserCourse::create([
         //   'user_id' => $request['current_user'],
