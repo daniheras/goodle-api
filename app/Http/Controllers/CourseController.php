@@ -12,10 +12,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CourseController extends Controller{
 
-    function index(Request $request, $list = 'all', $id = 0){
+    function index(Request $request, $list = 'all', $id = null){
         $courses = [];
 
-        if ($list == 'user' && $id != 0) {
+        if ($list == 'user' && $id != null) {
           $course = Course::find($id);
           $user_courses = User::find($request['current_user'])->courses;
 
