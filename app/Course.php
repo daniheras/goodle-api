@@ -18,10 +18,15 @@ class Course extends Model
         return $this->belongsToMany('App\User')->withPivot(['confirmed', 'member_since']);;
     }
 
-
-
+    // Esto está mal, hay que hacerlo tal y como esta hecho en subjects
     public function admins()
     {
-        return $this->hasMany('App\Course', 'admin_id');
+        return $this->hasMany('App\User', 'id', 'admin_id');
+    }
+
+    // Forma correcta de hacer el hasMany
+    public function subjects()
+    {
+        return $this->hasMany('App\Subject', 'course_id');
     }
 }

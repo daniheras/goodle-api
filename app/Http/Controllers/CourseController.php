@@ -12,10 +12,11 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CourseController extends Controller{
 
-    function index(Request $request, $list = 'all', $id = null){
+    function index(Request $request){
+        //Parameters: , $list = 'all', $id = null 
         $courses = [];
 
-        if ($list == 'user' && $id != null) {
+        /* if ($list == 'user' && $id != null) {
           $course = Course::find($id);
           $user_courses = User::find($request['current_user'])->courses;
 
@@ -26,25 +27,31 @@ class CourseController extends Controller{
             $course['admin'] = true;
             return $course;
           }else if ($course->public == 0 && !in_array($course, (array) $user_courses)) {
-            return response()->json(["message" => 'This user are not registered in this course'], 400);
+            return response()->json(["message" => 'This user is not registered in this course'], 400);
           }
 
           return $course;
-        }
+        } */
 
         // Si el parametro opcional es 'user', devuelve solo los cursos del usuario
-        if( $list == 'user' || $list == 'all') {
+        /* if( $list == 'user' || $list == 'all') {
 
           $user_courses = User::find($request['current_user'])->courses;
           $courses['user_courses'] = $user_courses;
-        }
+        } */
 
         // Si el parametro opcional es 'public', devuelve solo los cursos publicos
-        if ( $list == 'public' || $list == 'all' ){
+        /* if ( $list == 'public' || $list == 'all' ){
 
           $publicCourses = Course::where('public', 1)->get();
           $courses['public_courses'] = $publicCourses;
-        }
+        } */
+
+        $user_courses = User::find($request['current_user'])->courses;
+        $courses['user_courses'] = $user_courses;
+
+        $publicCourses = Course::where('public', 1)->get();
+        $courses['public_courses'] = $publicCourses;
 
         return $courses;
     }
@@ -192,7 +199,7 @@ class CourseController extends Controller{
         return response()->json(["Message" => 'Course not found or does not exist'], 404);
       }
 
-
+      return response()->json(["Message" => 'Something went wrong'], 500);
 
     }
 
