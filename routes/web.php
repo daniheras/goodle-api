@@ -55,7 +55,15 @@ $router->group(['middleware' => 'auth:api'], function($router)
 
     // ## Rutas de temas ##
 
-    $router->get('/courses/{course_id}/subjects/', 'SubjectController@index'); //Listar todas las tareas de un curso
+    $router->get('/courses/{course_id}/subjects/', 'SubjectController@index'); //Listar todos los temas de un curso
+
+    $router->post('/courses/{course_id}/subjects/', 'SubjectController@addSubject'); //Crear un tema en un curso
+    
+    $router->put('/courses/{course_id}/subjects/{subject_id}', 'SubjectController@updateSubject'); //Crear un tema en un curso
+
+    $router->delete('/courses/{course_id}/subjects/{subject_id}', 'SubjectController@deleteSubject'); //Crear un tema en un curso
+
+
     
 
     //Ruta para comprobar el estado de la api y si estas autenticado
