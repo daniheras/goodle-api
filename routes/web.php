@@ -32,6 +32,9 @@ $router->group(['middleware' => 'auth:api'], function($router)
     // ## Rutas de usuarios ##
 
     $router->get('/user', 'UserController@userInfo'); // Get user info
+    $router->post('/user/update', 'UserController@updateUser'); // Update user
+    $router->post('/user/resetPassword', 'UserController@resetPassword'); // Update user
+
 
 
 
