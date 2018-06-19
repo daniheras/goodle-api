@@ -29,7 +29,7 @@ $router->post('/register', 'UserController@register');
 $router->group(['middleware' => 'auth:api'], function($router)
 {
 
-    // ## Rutas de cursos ##
+    // ## Rutas de usuarios ##
 
     $router->get('/user', 'UserController@userInfo'); // Get user info
 
@@ -37,7 +37,8 @@ $router->group(['middleware' => 'auth:api'], function($router)
 
     // ## Rutas de cursos ##
 
-    $router->get('/courses[/{list}[/{id}]]', 'CourseController@index'); // Listar todos los cursos
+    $router->get('/courses', 'CourseController@index'); // Listar todos los cursos
+    /* [/{list}[/{id}]] */
 
     $router->post('/courses', 'CourseController@addCourse'); // Crear un curso
 
@@ -50,6 +51,12 @@ $router->group(['middleware' => 'auth:api'], function($router)
     $router->post('/courses/{course_id}/invite/{username}', 'CourseController@inviteUsers'); // Invitar un unico usuario al curso.
 
     $router->post('/courses/{course_id}/accept_invite/', 'CourseController@acceptInvite'); // Invitar un unico usuario al curso.
+
+
+    // ## Rutas de temas ##
+
+    $router->get('/courses/{course_id}/subjects/', 'SubjectController@index'); //Listar todas las tareas de un curso
+    
 
     //Ruta para comprobar el estado de la api y si estas autenticado
 
