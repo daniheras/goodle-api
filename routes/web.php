@@ -62,9 +62,19 @@ $router->group(['middleware' => 'auth:api'], function($router)
 
     $router->post('/courses/{course_id}/subjects/', 'SubjectController@addSubject'); //Crear un tema en un curso
     
-    $router->put('/courses/{course_id}/subjects/{subject_id}', 'SubjectController@updateSubject'); //Crear un tema en un curso
+    $router->put('/courses/{course_id}/subjects/{subject_id}', 'SubjectController@updateSubject'); //Actualizar un tema en un curso
 
-    $router->delete('/courses/{course_id}/subjects/{subject_id}', 'SubjectController@deleteSubject'); //Crear un tema en un curso
+    $router->delete('/courses/{course_id}/subjects/{subject_id}', 'SubjectController@deleteSubject'); //Borrar un tema de un curso
+
+    // ## Rutas de tareas ##
+
+    $router->get('/courses/{course_id}/subjects/{subject_id}/tasks[/{task_id}]', 'TaskController@index'); //Listar todas las tareas de un curso o la solicitada
+
+    $router->post('/courses/{course_id}/subjects/{subject_id}/tasks/{task_id}', 'TaskController@addTask'); //Crear una tarea en un tema de un curso
+    
+    $router->put('/courses/{course_id}/subjects/{subject_id}/tasks/{task_id}', 'TaskController@updateTask'); //Actualizar una tarea de un tema de un curso
+
+    $router->delete('/courses/{course_id}/subjects/{subject_id}/tasks/{task_id}', 'TaskController@deleteTask'); //Borrar una tarea de un tema de un curso
 
 
     
