@@ -12,66 +12,81 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CourseController extends Controller{
 
-    function index(Request $request, $list = 'all'){
+    function index(Request $request){
+        //Parameters: , $list = 'all', $id = null 
         $courses = [];
 
-        // Si el parametro opcional es 'all', devuelve los cursos publicos y los del usuario
+        /* if ($list == 'user' && $id != null) {
+          $course = Course::find($id);
+          $user_courses = User::find($request['current_user'])->courses;
 
+          // Si el usuario que pide este curso es el admin retorna el curso y un flag a true
+          // Si el curso no es publico y el usuario no esta registrado en el curso solicitado retorna un mensaje de error
+          // Si el curso es publico o el usuaio esta registrado en el curso solicitado y no es el admin retorna el curso
+          if ($course->admin_id == $request['current_user']) {
+            $course['admin'] = true;
+            return $course;
+          }else if ($course->public == 0 && !in_array($course, (array) $user_courses)) {
+            return response()->json(["message" => 'This user is not registered in this course'], 400);
+          }
+
+          return $course;
+        } */
 
         // Si el parametro opcional es 'user', devuelve solo los cursos del usuario
-        if( $list == 'user' || $list == 'all' ){
+        /* if( $list == 'user' || $list == 'all') {
 
-          $user = User::find($request['current_user']);
-          $courses['user_courses'] = $user->courses;
-
-        }
+          $user_courses = User::find($request['current_user'])->courses;
+          $courses['user_courses'] = $user_courses;
+        } */
 
         // Si el parametro opcional es 'public', devuelve solo los cursos publicos
-        if ( $list == 'public' || $list == 'all' ){
+        /* if ( $list == 'public' || $list == 'all' ){
 
           $publicCourses = Course::where('public', 1)->get();
           $courses['public_courses'] = $publicCourses;
+        } */
 
-        }
+        $user_courses = User::find($request['current_user'])->courses;
+        $courses['user_courses'] = $user_courses;
+
+        $publicCourses = Course::where('public', 1)->get();
+        $courses['public_courses'] = $publicCourses;
 
         return $courses;
     }
 
     function addCourse(Request $request){
         $this->validate($request, [
-            'name' => 'required|max:255',
-            'category' => 'required'
+            'name' => 'required|max:255'
         ]);
 
-        // Sets a default image if no one provided
-        if( !array_key_exists('picture', $request) ){
-          $request['picture'] = 'https://placeholdit.co//i/500x200?&bg=ecf0f1&fc=e74c3c&text=Goodle%20Course';
-        }
+        $input = $request->except('current_user');
+        $input['admin_id'] = $request['current_user'];
 
-        // Sets a default description if no one provided        
-        if( !array_key_exists('description', $request ) ){
-          $request['description'] = 'This course has no description';
-        }
+        //dd($input);
 
-        $course = Course::create([
-            'name' => $request['name'],
-            'admin_id' => $request['current_user'],
-            'category' => $request['category'],
-            'picture' => $request['picture'],
-            'description' => $request['description']      
-        ]);
+
+        $course = Course::create($input);
+        //TODO: eloquent
+        DB::select('insert into course_user (user_id, course_id, confirmed) values ('. $request['current_user'] .', ' . $course->id . ', 1);');
+        // UserCourse::create([
+        //   'user_id' => $request['current_user'],
+        //   'course_id' => $course->id,
+        //   'confirmed' => 1
+        // ]);
 
       return response()->json($course, 201);
 
     }
-    
+
     function updateCourse(Request $request){
       $this->validate($request, [
         'id' => 'required'
       ]);
 
 
-      $course = Course::find($request['id']); 
+      $course = Course::find($request['id']);
 
       // Si el usuario no es el admin del curso le devuelve unauthorized.
       if ( $course['admin_id'] != $request['current_user'] ) {
@@ -95,16 +110,16 @@ class CourseController extends Controller{
         if( $param == 0 ){
           return response()->json(["Message" => 'A valid course_id must be provided'], 401);
         }
-  
+
         $course = Course::findOrFail($param);
 
         //Si el usuario no es el admin devuelve unauthorized
         if ( $course['admin_id'] != $request['current_user'] ) {
           return response()->json(["Message" => 'You need to be the admin of this course to delete it'], 401);
         }
-  
+
         $course->delete();
-  
+
         return response()->json(["Message" => 'The course has been deleted'], 200);
 
       } catch (ModelNotFoundException $e) { // Si el curso solicitado no existe devuelve una excepcion
@@ -123,7 +138,7 @@ class CourseController extends Controller{
         if( $courseId == 0 ){
           return response()->json(["Message" => 'A valid course_id must be provided'], 401);
         }
-  
+
         // Guardamos el curso solicitado en la request
         $course = Course::findOrFail($courseId);
 
@@ -185,7 +200,7 @@ class CourseController extends Controller{
         return response()->json(["Message" => 'Course not found or does not exist'], 404);
       }
 
-
+      return response()->json(["Message" => 'Something went wrong'], 500);
 
     }
 

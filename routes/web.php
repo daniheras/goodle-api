@@ -29,12 +29,19 @@ $router->post('/register', 'UserController@register');
 $router->group(['middleware' => 'auth:api'], function($router)
 {
 
+    // ## Rutas de usuarios ##
+
+    $router->get('/user', 'UserController@userInfo'); // Get user info
+
+
+
     // ## Rutas de cursos ##
-    
-    $router->get('/courses[/{list}]', 'CourseController@index'); // Listar todos los cursos
+
+    $router->get('/courses', 'CourseController@index'); // Listar todos los cursos
+    /* [/{list}[/{id}]] */
 
     $router->post('/courses', 'CourseController@addCourse'); // Crear un curso
-    
+
     $router->put('/courses', 'CourseController@updateCourse'); // Actualizar/Modificar un curso
 
     $router->delete('/courses/{id}', 'CourseController@deleteCourse'); // Borrar un curso
@@ -45,6 +52,20 @@ $router->group(['middleware' => 'auth:api'], function($router)
 
     $router->post('/courses/{course_id}/accept_invite/', 'CourseController@acceptInvite'); // Invitar un unico usuario al curso.
 
+
+    // ## Rutas de temas ##
+
+    $router->get('/courses/{course_id}/subjects/', 'SubjectController@index'); //Listar todos los temas de un curso
+
+    $router->post('/courses/{course_id}/subjects/', 'SubjectController@addSubject'); //Crear un tema en un curso
+    
+    $router->put('/courses/{course_id}/subjects/{subject_id}', 'SubjectController@updateSubject'); //Crear un tema en un curso
+
+    $router->delete('/courses/{course_id}/subjects/{subject_id}', 'SubjectController@deleteSubject'); //Crear un tema en un curso
+
+
+    
+
     //Ruta para comprobar el estado de la api y si estas autenticado
 
     $router->get('/test', function() {
@@ -52,6 +73,6 @@ $router->group(['middleware' => 'auth:api'], function($router)
             'message' => 'Ok!',
         ]);
     });
-    
-    
+
+
 });
