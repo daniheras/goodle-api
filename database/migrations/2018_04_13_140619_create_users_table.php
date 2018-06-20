@@ -24,6 +24,7 @@ class CreateUsersTable extends Migration
             $table->string('surname', 255);
             $table->string('biography', 255);
             $table->string('school', 255);
+            $table->string('avatar', 555);
         });
     }
 

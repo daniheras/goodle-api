@@ -14,7 +14,7 @@ class User extends Model implements JWTSubject, AuthenticatableContract, Authori
     use Authenticatable, Authorizable;
 
     protected $fillable = [
-        'username', 'email', 'password', 'name', 'surname', 'biography', 'school'
+        'username', 'email', 'password', 'name', 'surname', 'biography', 'school', 'avatar'
     ];
 
     protected $hidden = [

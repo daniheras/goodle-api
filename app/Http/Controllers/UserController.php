@@ -34,6 +34,7 @@ class UserController extends Controller{
         $user->surname = $request['surname'];
         $user->biography = $request['biography'];
         $user->school = $request['school'];
+        $user->avatar = $request['avatar'];
 
         $user->save();
 
