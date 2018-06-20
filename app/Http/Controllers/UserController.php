@@ -49,4 +49,15 @@ class UserController extends Controller{
 
         return response()->json($user, 200);
     }
+
+    function getInvitations(Request $request) {
+
+        $courses_ids = DB::select('select course_id from course_user where user_id = 1 and confirmed = 0;');
+        $courses = [];
+        foreach ($courses_ids as $key => $value) {
+            $courses[] = DB::table('courses')->where('id', $value->course_id)->get();
+        }
+        return response()->json($courses, 200);
+
+    }
 }

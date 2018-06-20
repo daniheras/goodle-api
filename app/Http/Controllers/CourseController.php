@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class CourseController extends Controller{
 
     function index(Request $request){
-        //Parameters: , $list = 'all', $id = null 
+        //Parameters: , $list = 'all', $id = null
         $courses = [];
 
         /* if ($list == 'user' && $id != null) {
