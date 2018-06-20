@@ -19,7 +19,7 @@ class CreateTasksTable extends Migration
             $table->timestamp('updated_at')->useCurrent();
             $table->unsignedInteger('subject_id');
             $table->foreign('subject_id')->references('id')->on('subjects')->onDelete('cascade');
-            $table->string('title');
+            $table->string('title')->default('Tarea');
             $table->longText('text_content');
             $table->dateTime('finish_date');
             $table->integer('order');

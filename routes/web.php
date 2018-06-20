@@ -40,7 +40,7 @@ $router->group(['middleware' => 'auth:api'], function($router)
 
     // ## Rutas de cursos ##
 
-    $router->get('/courses', 'CourseController@index'); // Listar todos los cursos
+    $router->get('/courses[/{course_id}]', 'CourseController@index'); // Listar cursos
     /* [/{list}[/{id}]] */
 
     $router->post('/courses', 'CourseController@addCourse'); // Crear un curso

@@ -25,7 +25,7 @@ class SubjectController extends Controller{
 
             // Comprueba que el usuario que realiza la peticion pertenece al curso o que el curso sea publico
             if ($course->public == 0 && (!$user || $user['pivot']['confirmed'] == 0)) {
-                return response()->json(["message" => 'Unauthorized'], 401);
+                return response()->json(["message" => 'Unauthorized, you need to belong to the course'], 401);
             }
 
             $subjects = $course->subjects;

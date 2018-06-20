@@ -20,7 +20,7 @@ class CreateSubjectsTable extends Migration
             $table->unsignedInteger('course_id');
             $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
             $table->string('title');
-            $table->string('description');
+            $table->longText('description');
             $table->integer('order');
         });
     }
