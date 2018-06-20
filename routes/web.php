@@ -34,6 +34,7 @@ $router->group(['middleware' => 'auth:api'], function($router)
     $router->get('/user', 'UserController@userInfo'); // Get user info
     $router->post('/user/update', 'UserController@updateUser'); // Update user
     $router->post('/user/resetPassword', 'UserController@resetPassword'); // Update user
+    $router->get('/user/getInvitations', 'UserController@getInvitations'); // Update user
 
 
 
