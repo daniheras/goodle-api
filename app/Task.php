@@ -10,5 +10,10 @@ class Task extends Model
         'title', 'text_content', 'order', 'finish_date'
     ];
 
+    public function users()
+    {
+        return $this->belongsToMany('App\User')->withPivot(['file', 'uploaded_at']);;
+    }
+
     protected $hidden = [];
 }

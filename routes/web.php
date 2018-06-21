@@ -78,6 +78,10 @@ $router->group(['middleware' => 'auth:api'], function($router)
     $router->delete('/courses/{course_id}/subjects/{subject_id}/tasks/{task_id}', 'TaskController@deleteTask'); //Borrar una tarea de un tema de un curso
 
 
+    // ## Rutas de archivos de tareas ##
+
+    $router->post('/courses/{course_id}/subjects/{subject_id}/tasks/{task_id}', 'TaskController@uploadFile'); //Subir un archivo
+
     
 
     //Ruta para comprobar el estado de la api y si estas autenticado

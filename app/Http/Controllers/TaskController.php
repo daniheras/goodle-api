@@ -7,11 +7,14 @@ use App\User;
 use App\UserCourse;
 use App\Subject;
 use App\Task;
+use SpacesConnect;
 
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Carbon\Carbon;
 
 class TaskController extends Controller{
 
@@ -65,6 +68,55 @@ class TaskController extends Controller{
         $task = $subject->tasks->find($task_id);
 
         return $task;
+    }
+
+    function uploadFile(Request $request, $course_id, $subject_id, $task_id){
+        $course_id = intval($course_id);
+        $subject_id = intval($subject_id);
+        $task_id = intval($task_id);
+
+        try{
+            $course = Course::findOrFail($course_id);
+        } catch( ModelNotFoundException $e ) {
+            return response()->json(["Message" => 'Course not found or does not exist'], 404);
+        }
+
+        if( !$course->users->find($request['current_user']) ){
+            return response()->json(["Message" => 'Unauthorized. You need to belongs to this course'], 401);
+        }
+
+        $subject = $course->subjects->find($subject_id);
+
+        $task = $subject->tasks->find($task_id);
+
+        $key = "4QVRMM5XUFKAG7JIWAC7";
+        $secret = env('DROPLET_SECRET');
+
+        $space_name = "goodle";
+        $region = "ams3";
+
+        $space = new SpacesConnect($key, $secret, $space_name, $region);
+
+        $file = $request->file('file');
+
+        $file_fullname = $file->getClientOriginalName();
+
+        $space->UploadFile($file, "public", "files/user".$request['current_user']."/task".$task_id."/".$file_fullname);
+
+        // Si la tarea ya estaba subida simplemente la actualiza
+        if ( $task->users->find($request['current_user']) ){
+            $user = $task->users->find($request['current_user']);
+
+            $user->pivot['file'] = "https://goodle.ams3.digitaloceanspaces.com/files/user1/task1/".$file_fullname;
+            $user->pivot->save();
+            return 'Ya existe';
+        }
+
+        $user = User::find($request['current_user']);
+
+        $task->users()->save($user, ['file' => "https://goodle.ams3.digitaloceanspaces.com/files/user1/task1/".$file_fullname]);
+
+        return  'okey';
     }
 
     function addSubject(Request $request, $course_id){
