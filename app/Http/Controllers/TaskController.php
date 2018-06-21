@@ -168,17 +168,15 @@ class TaskController extends Controller{
 
     function listFiles(Request $request, $course_id, $subject_id, $task_id){
 
-        return 'okey';
-
         $course = Course::find($course_id);
 
         $subject = $course->subjects->find($subject_id);
 
-        $input = $request->except('current_user');
+        $task = $subject->tasks->find($task_id);
 
-        $task = $subject->tasks()->find($task_id)->delete();
+        $users = $task->users;
 
-        return 'Deleted';
+        return $users;
 
     }
 }
