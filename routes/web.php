@@ -71,7 +71,7 @@ $router->group(['middleware' => 'auth:api'], function($router)
 
     $router->get('/courses/{course_id}/subjects/{subject_id}/tasks[/{task_id}]', 'TaskController@index'); //Listar todas las tareas de un curso o la solicitada
 
-    $router->post('/courses/{course_id}/subjects/{subject_id}/tasks/{task_id}', 'TaskController@addTask'); //Crear una tarea en un tema de un curso
+    $router->post('/courses/{course_id}/subjects/{subject_id}/tasks/', 'TaskController@addTask'); //Crear una tarea en un tema de un curso
     
     $router->put('/courses/{course_id}/subjects/{subject_id}/tasks/{task_id}', 'TaskController@updateTask'); //Actualizar una tarea de un tema de un curso
 
