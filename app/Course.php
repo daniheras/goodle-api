@@ -27,6 +27,6 @@ class Course extends Model
     // Forma correcta de hacer el hasMany
     public function subjects()
     {
-        return $this->hasMany('App\Subject', 'course_id');
+        return $this->hasMany('App\Subject', 'course_id')->orderBy('order');
     }
 }

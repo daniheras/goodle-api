@@ -14,7 +14,7 @@ class User extends Model implements JWTSubject, AuthenticatableContract, Authori
     use Authenticatable, Authorizable;
 
     protected $fillable = [
-        'username', 'email', 'password'
+        'username', 'email', 'password', 'name', 'surname', 'biography', 'school', 'avatar'
     ];
 
     protected $hidden = [
@@ -34,6 +34,11 @@ class User extends Model implements JWTSubject, AuthenticatableContract, Authori
     public function courses()
     {
         return $this->belongsToMany('App\Course')->withPivot(['confirmed', 'member_since']);
+    }
+
+    public function tasks()
+    {
+        return $this->belongsToMany('App\Task')->withPivot(['file', 'uploaded_at']);
     }
 
 

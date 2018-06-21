@@ -12,40 +12,27 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CourseController extends Controller{
 
-    function index(Request $request){
+    function index(Request $request, $course_id = null){
         //Parameters: , $list = 'all', $id = null 
         $courses = [];
 
-        /* if ($list == 'user' && $id != null) {
-          $course = Course::find($id);
-          $user_courses = User::find($request['current_user'])->courses;
+        if ( !$course_id == null ){
+          try{
+            $course = Course::findOrFail( $course_id );
+            
+            //Añadimos un flag para decirle al front si el usuario que realiza la petición es admin del curso o no.
+            if ( $course['admin_id'] == $request['current_user'] ){
+              $course['admin'] = true;
+              return $course;
+            } else {
+              $course['admin'] = false;
+            }
 
-          // Si el usuario que pide este curso es el admin retorna el curso y un flag a true
-          // Si el curso no es publico y el usuario no esta registrado en el curso solicitado retorna un mensaje de error
-          // Si el curso es publico o el usuaio esta registrado en el curso solicitado y no es el admin retorna el curso
-          if ($course->admin_id == $request['current_user']) {
-            $course['admin'] = true;
             return $course;
-          }else if ($course->public == 0 && !in_array($course, (array) $user_courses)) {
-            return response()->json(["message" => 'This user is not registered in this course'], 400);
+          } catch (ModelNotFoundException $e) { 
+            return response()->json(["Message" => 'Course not found or does not exist'], 404);
           }
-
-          return $course;
-        } */
-
-        // Si el parametro opcional es 'user', devuelve solo los cursos del usuario
-        /* if( $list == 'user' || $list == 'all') {
-
-          $user_courses = User::find($request['current_user'])->courses;
-          $courses['user_courses'] = $user_courses;
-        } */
-
-        // Si el parametro opcional es 'public', devuelve solo los cursos publicos
-        /* if ( $list == 'public' || $list == 'all' ){
-
-          $publicCourses = Course::where('public', 1)->get();
-          $courses['public_courses'] = $publicCourses;
-        } */
+        }
 
         $user_courses = User::find($request['current_user'])->courses;
         $courses['user_courses'] = $user_courses;
