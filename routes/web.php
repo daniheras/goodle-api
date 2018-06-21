@@ -82,6 +82,9 @@ $router->group(['middleware' => 'auth:api'], function($router)
 
     $router->post('/courses/{course_id}/subjects/{subject_id}/tasks/{task_id}', 'TaskController@uploadFile'); //Subir un archivo
 
+    $router->get('/courses/{course_id}/subjects/{subject_id}/tasks/{task_id}/files', 'TaskController@listFiles'); //Listar archivos por usuario en una tarea
+
+
     
 
     //Ruta para comprobar el estado de la api y si estas autenticado

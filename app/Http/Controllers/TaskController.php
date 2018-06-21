@@ -136,17 +136,39 @@ class TaskController extends Controller{
 
         $course = Course::find($course_id);
 
+        
+
         $subject = $course->subjects->find($subject_id);
+
+        
 
         $input = $request->except('current_user');
 
+        
+
         $task = $subject->tasks()->find($task_id)->update($input);
 
-        return $task;
+        return 'Updated';
 
     }
 
     function deleteTask(Request $request, $course_id, $subject_id, $task_id){
+
+        $course = Course::find($course_id);
+
+        $subject = $course->subjects->find($subject_id);
+
+        $input = $request->except('current_user');
+
+        $task = $subject->tasks()->find($task_id)->delete();
+
+        return 'Deleted';
+
+    }
+
+    function listFiles(Request $request, $course_id, $subject_id, $task_id){
+
+        return 'okey';
 
         $course = Course::find($course_id);
 
