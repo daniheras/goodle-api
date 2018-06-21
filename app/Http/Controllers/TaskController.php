@@ -89,7 +89,7 @@ class TaskController extends Controller{
 
         $task = $subject->tasks->find($task_id);
 
-        $key = "4QVRMM5XUFKAG7JIWAC7";
+        $key = env('DROPLET_KEY');
         $secret = env('DROPLET_SECRET');
 
         $space_name = "goodle";
